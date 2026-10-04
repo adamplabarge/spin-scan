@@ -1,16 +1,20 @@
 // Zero-dependency static server for the demo.
 //   node scripts/serve.mjs            → http://localhost:5173/demo/
-//   node scripts/serve.mjs --https    → https on all interfaces with a self-signed cert (for phones)
+//   node scripts/serve.mjs --https    → HTTPS on all interfaces; the self-signed key is stored in the user's home directory
 import { createServer as createHttp } from 'node:http';
 import { createServer as createHttps } from 'node:https';
-import { readFile, stat, mkdir } from 'node:fs/promises';
+import { chmod, mkdir, readFile, realpath, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { networkInterfaces } from 'node:os';
-import { extname, join, normalize, resolve } from 'node:path';
+import { homedir, networkInterfaces } from 'node:os';
+import { extname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const publicRoots = [
+  { prefix: '/demo', directory: await realpath(resolve(projectRoot, 'demo')) },
+  { prefix: '/dist', directory: await realpath(resolve(projectRoot, 'dist')) },
+];
 const args = process.argv.slice(2);
 const useHttps = args.includes('--https');
 const port = Number(args.find((a) => a.startsWith('--port='))?.split('=')[1] ?? (useHttps ? 5443 : 5173));
@@ -37,13 +41,32 @@ async function handler(req, res) {
       res.writeHead(302, { Location: '/demo/' });
       return res.end();
     }
-    const file = normalize(join(root, path));
-    if (!file.startsWith(root) || file.includes('node_modules')) {
+    const mount = publicRoots.find(({ prefix }) => path === prefix || path.startsWith(`${prefix}/`));
+    if (!mount) {
+      res.writeHead(404);
+      return res.end('Not found');
+    }
+    let target = resolve(mount.directory, `.${path.slice(mount.prefix.length)}`);
+    const isWithinMount = (candidate) => {
+      const rel = relative(mount.directory, candidate);
+      return rel === '' || (rel !== '..' && !rel.startsWith(`..${sep}`) && !isAbsolute(rel));
+    };
+    if (!isWithinMount(target)) {
       res.writeHead(403);
       return res.end();
     }
-    let target = file;
-    if ((await stat(target)).isDirectory()) target = join(target, 'index.html');
+    target = await realpath(target);
+    if (!isWithinMount(target)) {
+      res.writeHead(403);
+      return res.end();
+    }
+    if ((await stat(target)).isDirectory()) {
+      target = await realpath(join(target, 'index.html'));
+      if (!isWithinMount(target)) {
+        res.writeHead(403);
+        return res.end();
+      }
+    }
     const body = await readFile(target);
     res.writeHead(200, { 'Content-Type': types[extname(target)] ?? 'application/octet-stream', 'Cache-Control': 'no-store' });
     res.end(body);
@@ -54,16 +77,18 @@ async function handler(req, res) {
 }
 
 async function getCert() {
-  const dir = join(root, '.cert');
+  const dir = join(homedir(), '.spin-scan', 'dev-cert');
   const key = join(dir, 'key.pem');
   const cert = join(dir, 'cert.pem');
   if (!existsSync(key) || !existsSync(cert)) {
-    await mkdir(dir, { recursive: true });
+    await mkdir(dir, { recursive: true, mode: 0o700 });
     execFileSync('openssl', [
       'req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-days', '365',
       '-keyout', key, '-out', cert, '-subj', '/CN=spin-scan-dev',
     ], { stdio: 'ignore' });
   }
+  await chmod(dir, 0o700);
+  await chmod(key, 0o600);
   return { key: await readFile(key), cert: await readFile(cert) };
 }
 

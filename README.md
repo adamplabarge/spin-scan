@@ -3,12 +3,20 @@
 Scan the label of a rotating cylinder (e.g. a medication bottle) with a phone/laptop camera and get **one flat, unwrapped image** of the whole label — ready to hand to an OCR engine of your choice.
 
 - TypeScript, compiled to ESM + CJS with type definitions
-- Runs entirely in the browser (no server, no WASM, no dependencies)
+- Runs entirely in the browser (no server, no WASM, no runtime dependencies)
 - Framework-agnostic core + React hook/component (`"use client"`, works in Next.js App Router)
 - Live user guidance: rotation speed, blur, glare, lighting, steadiness, progress
 - Works from a live camera or a recorded video clip
 
+![spin-scan demo](./spin-scan.png)
+
 > OCR is intentionally **not** part of this library. It produces an image; run OCR (Tesseract, a cloud API, etc.) on it afterwards.
+
+## Privacy and camera access
+
+Camera frames and video are processed locally in the browser. The library does not upload or persist them. Your application decides what to do with the resulting image; for example, the React example below explicitly sends it to `/api/ocr`.
+
+Camera access requires the user's permission and a secure context (HTTPS or `localhost`). The library requests video only, not microphone audio.
 
 ## Install
 
