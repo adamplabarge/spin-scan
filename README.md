@@ -186,11 +186,16 @@ The demo can use the camera, a video file, or a simulated bottle. It shows all p
 
 ### Publishing
 
-Publishing is automated by the GitHub Actions workflow when a GitHub Release is published:
+Releases are automated on pushes to `main`. Use [Conventional Commits](https://www.conventionalcommits.org/) to say what kind of change you are making:
 
-1. Add an npm access token with package publish permission as the `NPM_TOKEN` Actions secret in the GitHub repository settings.
-2. Update the version in `package.json`, commit and push the change, and create a GitHub Release with a matching version tag (for example, `v0.1.1`).
-3. Publish the release. The workflow installs dependencies, runs the `prepublishOnly` checks and build, then publishes to npm with provenance.
+- `fix: correct scan progress` publishes a patch release.
+- `feat: add scan pause support` publishes a minor release.
+- `feat!: change the scanner result format` publishes a major release. You can also include a `BREAKING CHANGE:` footer.
+- Other commit types, such as `docs:` and `chore:`, do not publish a release.
+
+The workflow runs the `prepublishOnly` checks and build, publishes to npm with provenance, creates a GitHub Release, and updates `CHANGELOG.md` and the package version files. Configure an npm access token with package publish permission as the `NPM_TOKEN` Actions secret in the GitHub repository settings; `GITHUB_TOKEN` is supplied by GitHub Actions.
+
+If the repository already has a published version but no matching Git tag, add a tag for that version (for example, `v0.1.0`) to its release commit before relying on automated versioning. Without a prior release tag, semantic-release starts at `1.0.0`.
 
 ## License
 
