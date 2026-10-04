@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>spin-scan demo</title>
+    <style>
+      :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+      body { margin: 0; background: #0b0d12; color: #e5e7eb; }
+      main { max-width: 980px; margin: 0 auto; padding: 12px; display: grid; gap: 12px; }
+      h1 { font-size: 18px; margin: 4px 0; }
+      .stage { position: relative; background: #000; border-radius: 10px; overflow: hidden; max-height: 70vh; aspect-ratio: 3 / 4; margin: 0 auto; width: 100%; max-width: 540px; }
+      .stage video { width: 100%; height: 100%; object-fit: contain; display: block; }
+      .stage svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+      .msg { position: absolute; top: 10px; left: 10px; right: 10px; text-align: center; font-weight: 600; text-shadow: 0 1px 3px #000; }
+      .msg small { display: block; font-weight: 400; opacity: 0.85; }
+      .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+      button, select, input, label.file { font: inherit; padding: 8px 14px; border-radius: 8px; border: 1px solid #374151; background: #1f2937; color: inherit; }
+      button:disabled { opacity: 0.4; }
+      button.primary { background: #2563eb; border-color: #2563eb; }
+      label.file input { display: none; }
+      fieldset { border: 1px solid #374151; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 12px; }
+      fieldset input[type='number'] { width: 70px; padding: 4px 6px; }
+      pre { background: #111827; padding: 8px; border-radius: 8px; font-size: 12px; overflow: auto; margin: 0; max-height: 220px; }
+      #result { display: none; gap: 8px; }
+      #result canvas { max-width: 100%; background: #fff; border-radius: 6px; }
+      .warn { color: #fbbf24; }
+      .instruction { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; padding: 24px; text-align: center; color: #fde047; font: 700 clamp(22px, 6vw, 40px)/1.2 system-ui, sans-serif; text-shadow: 0 2px 10px #000; pointer-events: none; animation: flash 0.8s ease-in-out infinite alternate; }
+      .instruction.show { display: flex; }
+      @keyframes flash { from { opacity: 1; } to { opacity: 0.25; } }
+      .countdown { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: 700 min(30vw, 160px)/1 system-ui, sans-serif; text-shadow: 0 2px 12px #000; pointer-events: none; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>spin-scan — bottle label scanner demo</h1>
+
+      <div class="bar">
+        <button id="btnCamera" class="primary">Open camera</button>
+        <label class="file">Scan a video file<input id="fileInput" type="file" accept="video/*" /></label>
+        <button id="btnSim">Simulated bottle</button>
+        <button id="btnTorch" disabled>Torch</button>
+        <label><input id="optAuto" type="checkbox" checked /> Auto-start on rotation</label>
+        <label><input id="optAutoStop" type="checkbox" checked /> Auto-stop when still</label>
+        <label>Mirror
+          <select id="optMirror">
+            <option value="auto" selected>auto</option>
+            <option value="on">on</option>
+            <option value="off">off</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="stage">
+        <video id="video" muted playsinline></video>
+        <svg id="overlay"></svg>
+        <div id="countdown" class="countdown" aria-live="assertive"></div>
+        <div id="instruction" class="instruction" aria-live="assertive">↺ Turn the bottle back to where the label starts</div>
+        <div class="msg"><span id="message">Open the camera, a video file, or the simulation</span><small id="sub"></small></div>
+      </div>
+
+      <div class="bar">
+        <button id="btnStart" class="primary" disabled>Start scan</button>
+        <button id="btnFinish" disabled>Finish now</button>
+        <button id="btnRecord" disabled>● Record clip</button>
+        <span id="recInfo"></span>
+      </div>
+
+      <fieldset>
+        <legend>Options (applied on next open)</legend>
+        <label>fps <input id="optFps" type="number" value="12" min="2" max="30" /></label>
+        <label>min °/s <input id="optMin" type="number" value="8" /></label>
+        <label>max °/s <input id="optMax" type="number" value="45" /></label>
+        <label>guide width <input id="optGw" type="number" step="0.05" placeholder="auto" /></label>
+        <label>guide height <input id="optGh" type="number" step="0.05" placeholder="auto" /></label>
+        <label>file playback rate <input id="optRate" type="number" step="0.25" value="1" /></label>
+        <label>sim °/s <input id="optSimSpeed" type="number" value="30" /></label>
+        <label>instruction s <input id="optInstr" type="number" value="2" min="0" max="15" /></label>
+        <label>countdown s <input id="optCountdown" type="number" value="3" min="0" max="15" /></label>
+        <label>still s <input id="optStill" type="number" value="3" min="0" max="15" /></label>
+        <label>stop countdown s <input id="optStopCountdown" type="number" value="3" min="0" max="15" /></label>
+      </fieldset>
+
+      <pre id="debug">—</pre>
+
+      <section id="result">
+        <div class="bar">
+          <strong>Result</strong>
+          <button id="btnDownload">Download PNG</button>
+          <span id="resultInfo"></span>
+        </div>
+        <canvas id="resultCanvas"></canvas>
+      </section>
+    </main>
+
+    <script type="module" src="./demo.js"></script>
+  </body>
+</html>
