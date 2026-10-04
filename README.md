@@ -178,10 +178,11 @@ The demo can use the camera, a video file, or a simulated bottle. It shows all p
 
 ### Publishing
 
-```bash
-npm login
-npm publish          # prepublishOnly runs typecheck, tests and build
-```
+Publishing is automated by the GitHub Actions workflow when a GitHub Release is published:
+
+1. Add an npm access token with package publish permission as the `NPM_TOKEN` Actions secret in the GitHub repository settings.
+2. Update the version in `package.json`, commit and push the change, and create a GitHub Release with a matching version tag (for example, `v0.1.1`).
+3. Publish the release. The workflow installs dependencies, runs the `prepublishOnly` checks and build, then publishes to npm with provenance.
 
 ## License
 
