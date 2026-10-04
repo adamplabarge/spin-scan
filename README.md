@@ -193,7 +193,7 @@ Releases are automated on pushes to `main`. Use [Conventional Commits](https://w
 - `feat!: change the scanner result format` publishes a major release. You can also include a `BREAKING CHANGE:` footer.
 - Other commit types, such as `docs:` and `chore:`, do not publish a release.
 
-The workflow runs the `prepublishOnly` checks and build, publishes to npm with provenance, creates a GitHub Release, and updates `CHANGELOG.md` and the package version files. Configure an npm access token with package publish permission as the `NPM_TOKEN` Actions secret in the GitHub repository settings; `GITHUB_TOKEN` is supplied by GitHub Actions.
+The workflow runs the `prepublishOnly` checks and build, publishes to npm with provenance, creates a GitHub Release, and updates `CHANGELOG.md` and the package version files. Create an npm granular access token with read/write access to `spin-scan`, then save it as the `NPM_TOKEN` Actions secret in the GitHub repository settings. `GITHUB_TOKEN` is supplied by GitHub Actions with the permissions needed to publish releases and report release failures.
 
 If the repository already has a published version but no matching Git tag, add a tag for that version (for example, `v0.1.0`) to its release commit before relying on automated versioning. Without a prior release tag, semantic-release starts at `1.0.0`.
 
