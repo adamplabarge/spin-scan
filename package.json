@@ -1,7 +1,7 @@
 {
   "name": "spin-scan",
   "author": "Adam LaBarge <adamplabarge@gmail.com>",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Scan the label of a rotating cylinder (e.g. a medication bottle) from a camera or video and stitch it into a single flat image.",
   "license": "MIT",
   "publishConfig": {

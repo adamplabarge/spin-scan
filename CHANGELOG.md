@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/adamplabarge/spin-scan/compare/v1.1.0...v1.2.0) (2026-10-05)
+
+
+### Features
+
+* fifth initial commit - publish to npm ([52d6879](https://github.com/adamplabarge/spin-scan/commit/52d687952825d6cbbc41ad0ed6ea7bf3ec7ee086))
+
 # [1.1.0](https://github.com/adamplabarge/spin-scan/compare/v1.0.0...v1.1.0) (2026-10-05)
 
 
