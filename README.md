@@ -8,7 +8,10 @@ Scan the label of a rotating cylinder (e.g. a medication bottle) with a phone/la
 - Live user guidance: rotation speed, blur, glare, lighting, steadiness, progress
 - Works from a live camera or a recorded video clip
 
+
 ![spin-scan demo](./spin-scan.png)
+
+*Screenshot from the spin-scan demo app.*
 
 > OCR is intentionally **not** part of this library. It produces an image; run OCR (Tesseract, a cloud API, etc.) on it afterwards.
 
