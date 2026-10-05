@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/adamplabarge/spin-scan/compare/v1.0.0...v1.1.0) (2026-10-05)
+
+
+### Features
+
+* third inital publish ([b67a9f2](https://github.com/adamplabarge/spin-scan/commit/b67a9f28aaf9127f85f59841d204d2f84a773760))
+
 # 1.0.0 (2026-10-04)
 
 
