@@ -2,6 +2,19 @@
 
 Context for anyone (human or AI agent) picking up this project: what was built, why it was built that way, where the tuning knobs are, and a log of real-bottle testing. **Update this file whenever behaviour, defaults or findings change.**
 
+## Publishing
+
+Releases are automated on pushes to `main`. Use [Conventional Commits](https://www.conventionalcommits.org/) to say what kind of change you are making:
+
+- `fix: correct scan progress` publishes a patch release.
+- `feat: add scan pause support` publishes a minor release.
+- `feat!: change the scanner result format` publishes a major release. You can also include a `BREAKING CHANGE:` footer.
+- Other commit types, such as `docs:` and `chore:`, do not publish a release.
+
+The workflow runs the `prepublishOnly` checks and build, publishes to npm with provenance, creates a GitHub Release, and updates `CHANGELOG.md` and the package version files. Create an npm granular access token with read/write permission to publish `spin-scan` and enable **Bypass two-factor authentication**, then save it as the `NPM_TOKEN` Actions secret in the GitHub repository settings. Without the bypass option, npm can require an interactive one-time password (`EOTP`), which CI cannot supply. The semantic-release npm plugin configures authentication from `NPM_TOKEN`; no manual token-writing step is needed. Rotate the secret before the token expires. `GITHUB_TOKEN` is supplied by GitHub Actions with the permissions needed to publish releases and report release failures.
+
+If the repository already has a published version but no matching Git tag, add a tag for that version (for example, `v0.1.0`) to its release commit before relying on automated versioning. Without a prior release tag, semantic-release starts at `1.0.0`.
+
 ## Goal and ground rules
 
 - Browser library (TypeScript → JS, published to npm as `spin-scan`). It scans a medication-bottle label while the user rotates the bottle and outputs **one flat image**.
