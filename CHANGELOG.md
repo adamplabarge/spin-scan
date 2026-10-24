@@ -1,3 +1,11 @@
+## [1.3.1](https://github.com/adamplabarge/spin-scan/compare/v1.3.0...v1.3.1) (2026-10-24)
+
+
+### Bug Fixes
+
+* correct demo module loading for directory URLs ([1437fc9](https://github.com/adamplabarge/spin-scan/commit/1437fc9c6243ef4a3180777656cd31e2728c9ab1))
+* synchronize dependency lockfile for release ([39d6ab7](https://github.com/adamplabarge/spin-scan/commit/39d6ab7f87491a5547006b454c4b802af34b48e9))
+
 # [1.3.0](https://github.com/adamplabarge/spin-scan/compare/v1.2.0...v1.3.0) (2026-10-05)
 
 
