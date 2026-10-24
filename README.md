@@ -187,6 +187,8 @@ npm run demo:https   # https on your LAN with a self-signed cert → open on a p
 
 The demo can use the camera, a video file, or a simulated bottle. It shows all per-frame metrics, and it can record a clip from the camera so a real bottle can be replayed through the pipeline while you tune parameters.
 
+Open the printed URL ending in `/demo/` (for LAN HTTPS, accept the self-signed certificate warning). The included server redirects `/` and `/demo` to `/demo/` so the page's relative module URL, `./demo.js`, resolves correctly. When using another static server, serve the repository root with `demo/` and the built `dist/` as sibling directories, and enable trailing-slash redirects for directories. Changing the script URL to `demo/demo.js` would break the `/demo/` page.
+
 ## License
 
 MIT

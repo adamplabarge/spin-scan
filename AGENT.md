@@ -212,6 +212,7 @@ These came from real-bottle testing. Each one replaced an approach that looked r
 
 ## Change history
 
+- **Unreleased:** demo server redirects directory URLs such as `/demo` to `/demo/` (preserving query strings), preventing `./demo.js` from resolving to `/demo.js` and returning 404. Keep the relative script URL; `demo/demo.js` breaks the documented `/demo/` entry point. Regression tests cover `/`, `/demo`, `/demo/`, and module requests.
 - **Unreleased:** package renamed `cylinder-photo` → `spin-scan` (package.json, lock, React imports, tsconfig `paths`, tsup external, docs, demo title). Class names (`CylinderScanner` etc.) intentionally unchanged. The local folder is still `cylinder-photo/`; that's fine.
 - **Unreleased:** start sequence reworked: flashing "turn back to the start" instruction (`instructionSec` 2) → 3 s countdown, time-only (stall reset removed). Stop defaults 3 s still + 3 s countdown. Demo: instruction/countdown options, scripted simulation (nudge, turn back, hold, ~1.1 turns, hold).
 - **Unreleased:** user-driven stop (`autoStop`: still 5 s → `'stopping'` countdown 5 s → finish; turning cancels), stitcher `autoComplete` option, `findLoopPeriod` (whole-overlap period search, robust to radius error), narrow seam cross-fade in `foldAccumulator`, no fold at a guessed period, `unsteady` no longer shown, `minDegPerSec` 15 → 8. Demo: auto-stop checkbox, still/stop-countdown options; the simulated bottle stops turning after 1.6 turns. 1 test.

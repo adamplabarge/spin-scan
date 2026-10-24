@@ -61,6 +61,10 @@ async function handler(req, res) {
       return res.end();
     }
     if ((await stat(target)).isDirectory()) {
+      if (!path.endsWith('/')) {
+        res.writeHead(302, { Location: `${url.pathname}/${url.search}` });
+        return res.end();
+      }
       target = await realpath(join(target, 'index.html'));
       if (!isWithinMount(target)) {
         res.writeHead(403);
@@ -96,11 +100,12 @@ const server = useHttps ? createHttps(await getCert(), handler) : createHttp(han
 const host = useHttps ? '0.0.0.0' : '127.0.0.1';
 server.listen(port, host, () => {
   const proto = useHttps ? 'https' : 'http';
-  console.log(`Demo: ${proto}://localhost:${port}/demo/`);
+  const listeningPort = server.address().port;
+  console.log(`Demo: ${proto}://localhost:${listeningPort}/demo/`);
   if (useHttps) {
     for (const addrs of Object.values(networkInterfaces())) {
       for (const a of addrs ?? []) {
-        if (a.family === 'IPv4' && !a.internal) console.log(`      ${proto}://${a.address}:${port}/demo/  (accept the self-signed certificate warning)`);
+        if (a.family === 'IPv4' && !a.internal) console.log(`      ${proto}://${a.address}:${listeningPort}/demo/  (accept the self-signed certificate warning)`);
       }
     }
   } else {
